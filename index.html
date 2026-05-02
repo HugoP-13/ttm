@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TTM - The Task Maker</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Pacifico&family=Bebas+Neue&display=swap');
+
+        :root {
+            --sand-light: #fdf2e9;
+            --sun-yellow: #ffeb3b;
+            --ocean-blue: #00bcd4;
+            --deep-ocean: #0097a7;
+            --text-dark: #2c3e50;
+            --danger-red: #e74c3c;
+        }
+
+        body {
+            background-image: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.2)), url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            font-family: 'Montserrat', sans-serif;
+            color: var(--text-dark);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .alert-banner {
+            background: var(--danger-red);
+            color: white;
+            width: 100%;
+            text-align: center;
+            padding: 10px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        header {
+            text-align: center;
+            padding: 40px 20px;
+            color: white;
+            text-shadow: 2px 4px 10px rgba(0,0,0,0.5);
+        }
+
+        .logo-main {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 8rem;
+            margin: 0;
+            line-height: 0.8;
+            letter-spacing: 5px;
+        }
+
+        .logo-sub {
+            font-family: 'Pacifico', cursive;
+            font-size: 1.5rem;
+            display: block;
+            margin-top: 10px;
+            color: var(--sun-yellow);
+        }
+
+        .main-wrapper {
+            width: 90%;
+            max-width: 1000px;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(10px);
+            padding: 50px;
+            border-radius: 40px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+            margin-bottom: 50px;
+            border: 1px solid rgba(255,255,255,0.3);
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+        }
+
+        @media (max-width: 800px) {
+            .main-wrapper {
+                grid-template-columns: 1fr;
+                padding: 30px;
+            }
+            .logo-main { font-size: 5rem; }
+        }
+
+        h2 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 2.5rem;
+            color: var(--deep-ocean);
+            margin-top: 0;
+            border-bottom: 3px solid var(--sun-yellow);
+            display: inline-block;
+            margin-bottom: 30px;
+        }
+
+        .form-section {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .info-section {
+            background: rgba(0, 188, 212, 0.1);
+            padding: 30px;
+            border-radius: 20px;
+            border-left: 8px solid var(--ocean-blue);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: 700;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+        }
+
+        .select-container {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+            position: relative;
+            padding-top: 40px; /* Espacio para las flechas arriba */
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        input[type="file"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid rgba(0,0,0,0.1);
+            border-radius: 12px;
+            font-size: 16px;
+            background: white;
+            transition: all 0.3s;
+            box-sizing: border-box;
+        }
+
+        input[type="file"] {
+            padding: 10px;
+            font-size: 0.9rem;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--ocean-blue);
+            box-shadow: 0 0 10px rgba(0, 188, 212, 0.2);
+        }
+
+        .info-btn {
+            background: var(--ocean-blue);
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-weight: bold;
+            flex-shrink: 0;
+            transition: background 0.3s;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2;
+        }
+
+        .info-btn:hover {
+            background: var(--deep-ocean);
+            transform: scale(1.1);
+        }
+
+        .instruction-wrapper {
+            position: absolute;
+            right: -80px;
+            top: -25px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            animation: bounceDiag 1s infinite;
+            z-index: 3;
+            pointer-events: none;
+        }
+
+        .drawn-arrows {
+            width: 80px;
+            height: 50px;
+            fill: none;
+            stroke: var(--deep-ocean);
+            stroke-width: 4;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .instruction-text {
+            font-size: 0.65rem;
+            font-weight: 900;
+            color: var(--deep-ocean);
+            line-height: 1.1;
+            text-align: center;
+            max-width: 120px;
+            background: rgba(255,255,255,0.8);
+            padding: 2px 5px;
+            border-radius: 5px;
+        }
+
+        @keyframes bounceDiag {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(-8px, 8px); }
+        }
+
+        .price-card {
+            background: var(--sun-yellow);
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            margin: 20px 0;
+            box-shadow: 0 5px 15px rgba(255, 235, 59, 0.4);
+        }
+
+        .price-value {
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: #d35400;
+        }
+
+        .terms-box {
+            font-size: 0.85rem;
+            line-height: 1.6;
+            color: #555;
+            margin-bottom: 20px;
+        }
+
+        .terms-box h4 {
+            margin: 0 0 10px 0;
+            color: var(--text-dark);
+        }
+
+        button.submit-btn {
+            background: linear-gradient(135deg, var(--ocean-blue), var(--deep-ocean));
+            color: white;
+            border: none;
+            padding: 20px;
+            border-radius: 15px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: all 0.3s;
+            box-shadow: 0 10px 20px rgba(0, 188, 212, 0.3);
+            width: 100%;
+        }
+
+        button.submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(0, 188, 212, 0.5);
+        }
+
+        .credentials-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .credentials-grid input {
+            padding: 10px;
+        }
+
+        .credentials-title {
+            grid-column: span 2;
+            font-size: 0.9rem;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        #infoModal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 0 100px rgba(0,0,0,0.5);
+            z-index: 2000;
+            max-width: 400px;
+            width: 90%;
+        }
+
+        #modalOverlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 1999;
+        }
+
+        #warningOverlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(231, 76, 60, 0.95);
+            z-index: 3000;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+
+        #warningOverlay h1 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 5rem;
+            margin: 0;
+            text-shadow: 5px 5px 0px rgba(0,0,0,0.2);
+        }
+
+        #warningOverlay p {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+
+        #warningOverlay button {
+            margin-top: 30px;
+            background: white;
+            color: var(--danger-red);
+            border: none;
+            padding: 15px 40px;
+            border-radius: 50px;
+            font-size: 1.5rem;
+            font-weight: 900;
+            cursor: pointer;
+            text-transform: uppercase;
+        }
+
+        footer {
+            color: white;
+            padding: 20px;
+            text-align: center;
+            width: 100%;
+            background: rgba(0,0,0,0.5);
+            margin-top: auto;
+        }
+    </style>
+</head>
+<body>
+
+<div class="alert-banner">
+    ⚠️ TODO EL DINERO DEBERÁ SER ENTREGADO AL ALUMNO HUGO PÉREZ.
+</div>
+
+<header>
+    <h1 class="logo-main">TTM</h1>
+    <span class="logo-sub">The Task Maker</span>
+</header>
+
+<div class="main-wrapper">
+    <div class="form-section">
+        <h2>Solicita tu Tarea</h2>
+        <form id="taskForm" action="https://formspree.io/f/yosoyroque13@gmail.com" method="POST" enctype="multipart/form-data">
+            <div class="form-group">
+                <label>Información Personal</label>
+                <div style="display: flex; gap: 10px;">
+                    <input type="text" name="Nombre" id="nombre" placeholder="Nombre" required>
+                    <input type="text" name="Apellido" id="apellido" placeholder="Apellidos" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Nombre de la Tarea</label>
+                <textarea name="Detalles_Tarea" id="tarea" rows="4" placeholder="¿Qué necesitas que haga por ti? (Computación, Robótica...)" required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>Archivo Adicional (Opcional)</label>
+                <input type="file" name="Archivo_Adjunto">
+            </div>
+
+            <div class="form-group">
+                <label>Nivel de Dificultad</label>
+                <div class="select-container">
+                    <select name="Dificultad" id="dificultad" onchange="updatePrice()" style="width: auto; flex-grow: 1;">
+                        <option value="0.75">Easy Mode (0.75€)</option>
+                        <option value="1.50">Standard Mode (1.50€)</option>
+                        <option value="3.00">Hard Mode (3.00€)</option>
+                    </select>
+                    <button type="button" class="info-btn" onclick="toggleModal(true)">?</button>
+                    
+                    <div class="instruction-wrapper">
+                        <span class="instruction-text">DALE AQUÍ PARA VER LAS DEFINICIONES!!</span>
+                        <svg class="drawn-arrows" viewBox="0 0 100 60">
+                            <!-- Flecha 1 diagonal abajo-izquierda -->
+                            <path d="M40 10 L15 35 M25 35 L15 35 L15 25" />
+                            <!-- Flecha 2 diagonal abajo-izquierda -->
+                            <path d="M70 10 L45 35 M55 35 L45 35 L45 25" />
+                            <!-- Flecha 3 diagonal abajo-izquierda -->
+                            <path d="M100 10 L75 35 M85 35 L75 35 L75 25" />
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <div class="price-card">
+                <span style="display:block; text-transform:uppercase; font-size:0.8rem; font-weight:bold;">Total a pagar</span>
+                <span id="priceDisplay" class="price-value">0.75€</span>
+                <input type="hidden" name="Precio_Total" id="hiddenPrice" value="0.75€">
+            </div>
+
+            <button type="submit" class="submit-btn">Enviar al Task Maker 🌊</button>
+        </form>
+    </div>
+
+    <div class="info-section">
+        <h2>Detalles de Acceso</h2>
+        <p style="font-size: 0.9rem; color: #666; margin-bottom: 20px;">Para completar la tarea, necesito entrar en tus cuentas. Todo será manejado con máxima privacidad.</p>
+        
+        <div class="credentials-grid">
+            <div class="credentials-title">MOODLE CENTROS</div>
+            <input type="text" name="Moodle_Usuario" placeholder="Usuario" required form="taskForm">
+            <input type="password" name="Moodle_Pass" placeholder="Contraseña" required form="taskForm">
+            
+            <div class="credentials-title">GMAIL / OTROS</div>
+            <input type="email" name="Gmail_Usuario" placeholder="Correo" required form="taskForm">
+            <input type="password" name="Gmail_Pass" placeholder="Contraseña" required form="taskForm">
+        </div>
+
+        <hr style="margin: 30px 0; border: none; border-top: 1px solid rgba(0,0,0,0.1);">
+
+        <div class="terms-box">
+            <h4>📜 Reglas de la Playa</h4>
+            <p>• Si el mar está picado (no puedo terminar a tiempo), pediré una <strong>extensión de plazo</strong>.</p>
+            <p>• Bajo ningún concepto habrá <strong>reembolsos</strong> si pides la extensión o si el plazo cambia.</p>
+            <p>• 💰 La tarea se empezará a realizar <strong>únicamente después</strong> de haber entregado el dinero.</p>
+            <p>• ⚠️ Si la dificultad no se selecciona correctamente, <strong>el dinero no será devuelto</strong>.</p>
+            <p>• 🚫 Filtrar este negocio a otros grupos o profesores implica la <strong>prohibición permanente</strong> de usar la herramienta.</p>
+        </div>
+
+        <div style="display:flex; align-items: center; gap: 10px;">
+            <input type="checkbox" name="Acepta_Terminos" id="accept" required form="taskForm">
+            <label for="accept" style="margin:0; font-size:0.75rem; text-transform:none;">Entiendo las reglas y acepto el servicio.</label>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Info -->
+<div id="modalOverlay" onclick="toggleModal(false)"></div>
+<div id="infoModal">
+    <h3 style="font-family:'Bebas Neue'; font-size: 1.8rem; color: var(--deep-ocean);">Guía de Dificultad</h3>
+    <ul style="font-size: 0.9rem; line-height: 1.6; padding-left: 20px;">
+        <li><strong>Easy Mode:</strong> Unas pocas cositas rápidas y sencillas.</li>
+        <li><strong>Standard Mode:</strong> Documentos, archivos y ejercicios del libro.</li>
+        <li><strong>Hard Mode:</strong> Programación, código o manejo complejo de muchos archivos.</li>
+    </ul>
+    <button onclick="toggleModal(false)" style="width:100%; background: var(--sun-yellow); color: var(--text-dark); border:none; padding:10px; border-radius:10px; font-weight:bold; cursor:pointer;">Entendido</button>
+</div>
+
+<div id="warningOverlay">
+    <h1>EHHH!! SE TE OLVIDA LA GUIA!!</h1>
+    <p>Es obligatorio revisar las dificultades antes de enviar.</p>
+    <button onclick="closeWarning()">VOLVER Y REVISAR</button>
+</div>
+
+<footer>
+    <p>&copy; 2024 TTM - The Task Maker | Calidad Premium para Hugo Pérez</p>
+</footer>
+
+<script>
+    let guideOpened = false;
+
+    function updatePrice() {
+        const select = document.getElementById('dificultad');
+        const display = document.getElementById('priceDisplay');
+        const hiddenPrice = document.getElementById('hiddenPrice');
+        const price = parseFloat(select.value).toFixed(2) + '€';
+        display.innerText = price;
+        hiddenPrice.value = price;
+    }
+
+    function toggleModal(show) {
+        if (show) guideOpened = true;
+        document.getElementById('infoModal').style.display = show ? 'block' : 'none';
+        document.getElementById('modalOverlay').style.display = show ? 'block' : 'none';
+    }
+
+    function closeWarning() {
+        document.getElementById('warningOverlay').style.display = 'none';
+    }
+
+    document.getElementById('taskForm').onsubmit = function(e) {
+        if (!guideOpened) {
+            e.preventDefault();
+            document.getElementById('warningOverlay').style.display = 'flex';
+            return false;
+        }
+        alert('🏄‍♂️ ¡Enviando al Task Maker! Se abrirá una página de confirmación. Relájate en la arena.');
+    };
+</script>
+
+</body>
+</html>
